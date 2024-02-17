@@ -1,33 +1,29 @@
 const mongoose=require('mongoose')
 
-const courtSchema=mongoose.Schema({
-    courtName: {
+const PlayerSchema=mongoose.Schema({
+    PlayerName: {
         type:String,
         required:true
     },
-    location:  {
+    code:  {
         type:String,
         required:true
     },
-    type:  {
+   role:  {
         type:String,
         required:true
     },
 
-    about:{
+    basepoint:{
         type:String,
         required:true
     },
-    // description:{
-    //     type:String,
-    //     required:true
-    // },
-
-    address:  {
+    
+   team:  {
         type:String,
         required:true
     },
-    courtPic:{
+    CourtPic:{
         type:String,
         required:true
     }
@@ -37,5 +33,5 @@ const courtSchema=mongoose.Schema({
         default:new Date()
     }
 })
-const court=mongoose.model('court',courtSchema)
-module.exports=court
+const Player=mongoose.model('Player',PlayerSchema)
+module.exports=Player

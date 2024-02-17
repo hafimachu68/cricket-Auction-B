@@ -9,7 +9,6 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const authRouter=require('./routes/authRouter');
 const adminRoute=require('./routes/adminRouter')
-const paymentRouter=require('./routes/paymentRouter')
 
 
 var app = express();
@@ -24,6 +23,7 @@ const corsOptions ={
   credentials:true,            //access-control-allow-credentials:true
   optionSuccessStatus:200
 }
+
 app.use(cors({
   origin:['https://cricket-auction.onrender.com','http://localhost:3000']
 }));
@@ -42,7 +42,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/admin', adminRoute);
-app.use('/payment', paymentRouter);
 
 
 // catch 404 and forward to error handler

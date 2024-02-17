@@ -1,7 +1,10 @@
+require('dotenv').config();
 const USERS=require('../Models/userModel')
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt=require('jsonwebtoken')
+const jwtSecret = process.env.JWT_SECRET;
+
 
 const doSignUp= async(req,res)=>{
 
@@ -39,7 +42,7 @@ try {
 if(user){
     bcrypt.compare(req.body.password,user.password,(err,hashRes)=>{
 if (hashRes) {
-    const token=jwt.sign({userid:user._id,email:user.email,fname:user.fname,lname:user.lname,role:user?.role},"mycourt",{expiresIn:'2d'})
+    const token=jwt.sign({userid:user._id,email:user.email,fname:user.fname,lname:user.lname,role:user?.role},jwtSecret,{expiresIn:'2d'})
     user.password=undefined
     res.status(200).json({message:"login sucessfull",token:token,user:user })
 }

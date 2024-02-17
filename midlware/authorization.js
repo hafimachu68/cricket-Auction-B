@@ -1,9 +1,12 @@
+require('dotenv').config();
 const jwt =require('jsonwebtoken');
+const jwtSecret = process.env.JWT_SECRET;
 
 const userAuth = (req, res, next) => {
   try {
     const token = req.headers['authorization'].split(' ')[1];  
-    jwt.verify(token, 'mycourt', (err, decodedToken) => {
+    jwt.verify(token, jwtSecret, (err, decodedToken) => {
+      console.log('jwtSecret:', jwtSecret);
       console.log(decodedToken);
       if (decodedToken) {
         req.userId = decodedToken.userid;  
@@ -22,7 +25,7 @@ const userAuth = (req, res, next) => {
 const adminAuth = (req, res, next) => {
   try {
     const token = req.headers['authorization'].split(' ')[1];  
-    jwt.verify(token, 'mycourt', (err, decodedToken) => {
+    jwt.verify(token, jwtSecret, (err, decodedToken) => {
       if (decodedToken && decodedToken.role===1) {
         req.userId = decodedToken.userId;  
         next(); 

@@ -5,12 +5,12 @@ const groupSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    courts: [{
-        courtName: String,
-        location: String,
-        about: String,
+    players: [{
+        playerName: String,
+        role: String,
+        basepoint: String,
         image: String,
-        price:String
+       bidpoint:String
     }]
 });
 

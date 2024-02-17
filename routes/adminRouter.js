@@ -1,5 +1,5 @@
 var express = require('express');
-const { addCourtData, addTimeSlotData,updateCourtData ,deleteCourtData,addteamData, deleteteamData, updateteamData} = require('../controllers/adminController');
+const { addteamData, deleteteamData, updateteamData, addPlayerData, updatePlayerData, deletePlayerData} = require('../controllers/adminController');
 const multer = require('multer');
 const { adminAuth } = require('../midlware/authorization');
 var router = express.Router();
@@ -14,13 +14,12 @@ const fileStorage=multer.diskStorage({
 })
 const upload=multer({storage:fileStorage})
 
-router.post('/addCourtData',adminAuth,upload.single('image'),addCourtData);
+router.post('/addPlayerData',adminAuth,upload.single('image'),addPlayerData);
 router.post('/addteam',adminAuth,upload.single('image'),addteamData);
-router.post('/addTimeSlotData',adminAuth,addTimeSlotData)
 // Update Court Data Route
-router.put('/updateCourtData/:courtId', adminAuth, upload.single('image'), updateCourtData);
+router.put('/updatePlayerData/:playerId', adminAuth, upload.single('image'), updatePlayerData);
 router.put('/updateteamData/:teamId', adminAuth, upload.single('image'), updateteamData);
-router.delete('/deleteData/:courtId', adminAuth, deleteCourtData);
+router.delete('/deleteData/:playerId', adminAuth, deletePlayerData);
 router.delete('/deleteteam/:teamId', adminAuth, deleteteamData);
 
 

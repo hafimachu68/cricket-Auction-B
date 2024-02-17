@@ -1,126 +1,77 @@
-const { json } = require("express");
-const player = require("../Models/courtModels");
-const COURT_SHEDULES=require('../Models/courtSheduleModels');
-const court = require("../Models/courtModels");
+const Player = require("../Models/playerModels");
 const team = require("../Models/teamModels");
 
-
-
-const addCourtData= async(req,res)=>{
+const addPlayerData = async (req, res) => {
     try {
-        
-  await  court({
-        courtName:req.query.courtName,
-        location:req.query.location,
-        address:req.query.team,
-        type:req.query.type,
-        about:req.query.about,
-        description:req.query.description,
-        courtPic:req.file.filename}).save()
-       res.status(200).json({message:"court data added sucessfully"})
-        
-    } catch (error) {
-        res.status(500).json({message:"invalid entry"})
-    }
-  
-};
-
-const addteamData= async(req,res)=>{
-    try {
-        
-  await  team({
-        teamName:req.query.teamName,
-        basepoint:req.query.basepoint,
-        budget:req.query.budget,
-        teamPic:req.file.filename}).save()
-       res.status(200).json({message:"team data added sucessfully"})
-        
-    } catch (error) {
-        res.status(500).json({message:"invalid entry"})
-    } };
-  
-// };
-// const addteamData = async (req, res) => {
-//     try {
-//         const { teamName, basepoint, budget } = req.body;
-//         const teamPic = req.file.filename;
-
-//         await team.create({
-//             teamName,
-//             basepoint,
-//             budget,
-//             teamPic
-//         });
-
-//         res.status(200).json({ message: "Team data added successfully" });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: "Invalid entry" });
-//     }
-// };
-
-const addTimeSlotData=(req,res)=>{
-
-    try {
- const {startDate,endDate,cost,selectedTiminigs,courtId}=req.body
-   let currentDate= new Date(startDate)
-   const lastDate=new Date(endDate)
-   const slotObject=[]
-  while(currentDate<=lastDate){
-    for(let data of selectedTiminigs){
-        slotObject.push({
-            date:JSON.parse(JSON.stringify(currentDate)),
-            slot:{
-                name:data.name,
-                id:data.id
-            },
-            cost,
-            courtId
-        })
-    }
-    currentDate.setDate(currentDate.getDate()+1)
-  }
-  COURT_SHEDULES.insertMany(slotObject).then((response)=>{
-    res.status(200).json({ message: "Slots generated successfully" });
-})
-        
-    } catch (error) {
-        console.log(err)
-        
-    }
-   
-  
-}
-
-const updateCourtData = async (req, res) => {
-    try {
-        const courtId = req.params.courtId;
-        const { courtName, location, address, type, about, description } = req.body;
+        const { PlayerName, code, team, role, basepoint } = req.query;
 
         // Check if image is uploaded
-        let courtPic;
+        let CourtPic;
         if (req.file) {
-            courtPic = req.file.filename;
+            CourtPic = req.file.filename;
         }
 
-        const updatedCourtData = {
-            courtName,
-            location,
-            address,
-            type,
-            about,
-            description
-        };
+        await Player.create({
+            PlayerName,
+            code,
+            team,
+            role,
+            basepoint,
+            CourtPic
+        });
 
-        // If image is uploaded, add it to updatedCourtData
-        if (courtPic) {
-            updatedCourtData.courtPic = courtPic;
+        res.status(200).json({ message: "Player data added successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const addteamData = async (req, res) => {
+    try {
+        const { teamName, basepoint, budget } = req.query;
+
+        // Check if image is uploaded
+        let teamPic;
+        if (req.file) {
+            teamPic = req.file.filename;
         }
 
-        // Find the court by ID and update its data
-        const updatedCourt = await court.findByIdAndUpdate(courtId, updatedCourtData, { new: true });
+        await team.create({
+            teamName,
+            basepoint,
+            budget,
+            teamPic
+        });
 
-        res.status(200).json({ message: "Court data updated successfully", updatedCourt });
+        res.status(200).json({ message: "Team data added successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const updatePlayerData = async (req, res) => {
+    try {
+        const playerId = req.params.playerId;
+        const { PlayerName, code, team, role, basepoint } = req.body;
+
+        // Check if image is uploaded
+        let CourtPic;
+        if (req.file) {
+            CourtPic = req.file.filename;
+        }
+
+        const updatedPlayer = await Player.findByIdAndUpdate(playerId, {
+            PlayerName,
+            code,
+            team,
+            role,
+            basepoint,
+            CourtPic
+        }, { new: true });
+
+        res.status(200).json({ message: "Player data updated successfully", updatedPlayer });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
@@ -130,7 +81,7 @@ const updateCourtData = async (req, res) => {
 const updateteamData = async (req, res) => {
     try {
         const teamId = req.params.teamId;
-        const { teamName, basepoint, budget} = req.body;
+        const { teamName, basepoint, budget } = req.body;
 
         // Check if image is uploaded
         let teamPic;
@@ -138,67 +89,50 @@ const updateteamData = async (req, res) => {
             teamPic = req.file.filename;
         }
 
-        const updateteamData = {
+        const updatedTeam = await team.findByIdAndUpdate(teamId, {
             teamName,
             basepoint,
-            budget
-           
-        };
+            budget,
+            teamPic
+        }, { new: true });
 
-        // If image is uploaded, add it to updatedCourtData
-        if (teamPic) {
-            updateteamData.teamPic = teamPic;
-        }
-
-        // Find the court by ID and update its data
-        const updatedteam = await team.findByIdAndUpdate(teamId, updateteamData, { new: true });
-
-        res.status(200).json({ message: "Court data updated successfully", updatedteam });
+        res.status(200).json({ message: "Team data updated successfully", updatedTeam });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
 
-
-const deleteCourtData = async (req, res) => {
+const deletePlayerData = async (req, res) => {
     try {
-        const courtId = req.params.courtId;
+        const playerId = req.params.playerId;
+        const deletedPlayer = await Player.findByIdAndDelete(playerId);
 
-        // Find the court by ID and delete it
-        const deletedCourt = await court.findByIdAndDelete(courtId);
-
-        // Also delete associated schedules
-        await COURT_SHEDULES.deleteMany({ courtId });
-
-        if (!deletedCourt) {
-            return res.status(404).json({ message: 'Court not found' });
+        if (!deletedPlayer) {
+            return res.status(404).json({ message: "Player not found" });
         }
 
-        res.status(200).json({ message: 'Court deleted successfully', deletedCourt });
+        res.status(200).json({ message: "Player deleted successfully", deletedPlayer });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: "Internal server error" });
     }
 };
+
 const deleteteamData = async (req, res) => {
     try {
         const teamId = req.params.teamId;
+        const deletedTeam = await team.findByIdAndDelete(teamId);
 
-        // Find the court by ID and delete it
-        const deletedteam = await team.findByIdAndDelete(teamId);
-
-        // Also delete associated schedules
-
-        if (!deletedCourt) {
-            return res.status(404).json({ message: 'Court not found' });
+        if (!deletedTeam) {
+            return res.status(404).json({ message: "Team not found" });
         }
 
-        res.status(200).json({ message: 'Court deleted successfully', deletedteam });
+        res.status(200).json({ message: "Team deleted successfully", deletedTeam });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: "Internal server error" });
     }
 };
 
-module.exports={addCourtData,addTimeSlotData,updateCourtData,deleteCourtData,addteamData,deleteteamData,updateteamData}
+module.exports = { addPlayerData, updatePlayerData, deletePlayerData, addteamData, deleteteamData, updateteamData };
