@@ -25,7 +25,7 @@ const PlayerSchema=mongoose.Schema({
     },
     CourtPic:{
         type:String,
-        required:true
+        required:true 
     }
     ,
     timeStamp:{
