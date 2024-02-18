@@ -25,7 +25,7 @@ const corsOptions ={
 }
 
 app.use(cors({
-  origin:['https://cricketauction-c92j.onrender.com','http://localhost:3000']
+  origin:['https://cricket-auction-8kdp.onrender.com','http://localhost:3000']
 }));
 
 // view engine setup
