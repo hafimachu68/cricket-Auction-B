@@ -1,4 +1,4 @@
-const Player = require("../Models/playerModels");
+const Player = require('../Models/PlayerModels');
 const team = require("../Models/teamModels");
 
 const addPlayerData = async (req, res) => {
@@ -9,10 +9,10 @@ const addPlayerData = async (req, res) => {
         let CourtPic;
         if (req.file) {
             CourtPic = req.file.filename;
-        }
+        }  
 
         await Player.create({
-            PlayerName,
+            PlayerName,  
             code,
             team,
             role,

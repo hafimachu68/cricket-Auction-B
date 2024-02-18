@@ -1,4 +1,4 @@
-const Player=require('../Models/playerModels')
+const Player=require('../Models/PlayerModels')
 const Group=require('../Models/groupModels');
 const team = require('../Models/teamModels');
 const Groupt = require('../Models/teamgModels');
